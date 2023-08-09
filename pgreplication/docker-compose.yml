@@ -1,0 +1,63 @@
+version: "2.4"
+
+x-credentials:
+  - &db_name postgres
+  - &db_user postgres
+  - &db_pass abc123@
+  - &replication_user replicator
+  - &replication_pass def456@
+
+services:
+  primary:
+    image: postgres:14-alpine
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf' -c 'hba_file=/etc/postgresql/pg_hba.conf'
+    restart: unless-stopped
+    container_name: pgreplication-primary
+    volumes:
+      - primary-data:/var/lib/postgresql/data
+      - ./primary/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+      - ./primary/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+      - ./scripts/setup-primary.sh:/docker-entrypoint-initdb.d/setup-primary.sh:ro
+    environment:
+      POSTGRES_DATABASE: *db_name
+      POSTGRES_USER: *db_user
+      POSTGRES_PASSWORD: *db_pass
+      REPLICATION_USER: *replication_user
+      REPLICATION_PASSWORD: *replication_pass
+
+  replica-01:
+    image: postgres:14-alpine
+    entrypoint: /usr/local/bin/setup-replica.sh
+    command: run-setup
+    restart: unless-stopped
+    container_name: pgreplication-replica-01
+    volumes:
+      - replica-01-data:/var/lib/postgresql/data
+      - ./scripts/setup-replica.sh:/usr/local/bin/setup-replica.sh:ro
+    environment:
+      REPLICATION_USER: *replication_user
+      REPLICATION_PASSWORD: *replication_pass
+      PG_PRIMARY_HOST: primary
+    depends_on:
+      - primary
+
+  replica-02:
+    image: postgres:14-alpine
+    entrypoint: /usr/local/bin/setup-replica.sh
+    command: run-setup
+    restart: unless-stopped
+    container_name: pgreplication-replica-02
+    volumes:
+      - replica-02-data:/var/lib/postgresql/data
+      - ./scripts/setup-replica.sh:/usr/local/bin/setup-replica.sh:ro
+    environment:
+      REPLICATION_USER: *replication_user
+      REPLICATION_PASSWORD: *replication_pass
+      PG_PRIMARY_HOST: primary
+    depends_on:
+      - primary
+
+volumes:
+  primary-data:
+  replica-01-data:
+  replica-02-data:
