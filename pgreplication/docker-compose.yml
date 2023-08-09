@@ -1,11 +1,11 @@
 version: "2.4"
 
 x-credentials:
-  - &db_name postgres
-  - &db_user postgres
-  - &db_pass abc123@
-  - &replication_user replicator
-  - &replication_pass def456@
+  - &db_name ${POSTGRES_DATABASE}
+  - &db_user ${POSTGRES_USER}
+  - &db_pass ${POSTGRES_PASSWORD}
+  - &replication_user ${REPLICATION_USER}
+  - &replication_pass ${REPLICATION_PASSWORD}
 
 services:
   primary:
