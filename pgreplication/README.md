@@ -2,6 +2,8 @@
 
 Goal: test Postgres streaming replication using Docker containers, preferably without having to build custom images.
 
+See also a very similar deployment [on Nomad](README.nomad.md).
+
 ## Preparing
 
 Create the `.env` file:
