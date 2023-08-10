@@ -27,13 +27,13 @@ services:
 
   replica-01:
     image: postgres:14-alpine
-    entrypoint: /usr/local/bin/setup-replica.sh
+    entrypoint: /setup-replica.sh
     command: run-setup
     restart: unless-stopped
     container_name: pgreplication-replica-01
     volumes:
       - replica-01-data:/var/lib/postgresql/data
-      - ./scripts/setup-replica.sh:/usr/local/bin/setup-replica.sh:ro
+      - ./scripts/setup-replica.sh:/setup-replica.sh:ro
     environment:
       REPLICATION_USER: *replication_user
       REPLICATION_PASSWORD: *replication_pass
@@ -43,13 +43,13 @@ services:
 
   replica-02:
     image: postgres:14-alpine
-    entrypoint: /usr/local/bin/setup-replica.sh
+    entrypoint: /setup-replica.sh
     command: run-setup
     restart: unless-stopped
     container_name: pgreplication-replica-02
     volumes:
       - replica-02-data:/var/lib/postgresql/data
-      - ./scripts/setup-replica.sh:/usr/local/bin/setup-replica.sh:ro
+      - ./scripts/setup-replica.sh:/setup-replica.sh:ro
     environment:
       REPLICATION_USER: *replication_user
       REPLICATION_PASSWORD: *replication_pass
