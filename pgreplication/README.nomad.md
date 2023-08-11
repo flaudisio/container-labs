@@ -77,7 +77,7 @@ $ nomad alloc exec 9d6fd171 psql -U postgres -c '\l example1'
 Try to create a database on **replica**:
 
 ```console
-$ nomad alloc exec 9d6fd171 psql -U postgres -c 'CREATE DATABASE example1;'
+$ nomad alloc exec 9d6fd171 psql -U postgres -c 'CREATE DATABASE example2;'
 ERROR:  cannot execute CREATE DATABASE in a read-only transaction
 ```
 
