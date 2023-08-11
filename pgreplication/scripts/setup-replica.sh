@@ -13,7 +13,7 @@ _msg()
 
 check_env()
 {
-    if [[ -n "$PG_PRIMARY_HOST"  ]] ; then
+    if [[ -n "$PG_PRIMARY_HOST" ]] ; then
         return 0
     fi
 
