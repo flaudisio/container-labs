@@ -1,6 +1,6 @@
-# Docker Compose Labs
+# Container Labs
 
-Miscellaneous Docker Compose configurations for learning and testing purposes.
+Miscellaneous Docker Compose and Nomad configurations for learning and testing purposes.
 
 > **WARNING:** source code in this repository is **NOT SUITABLE FOR PRODUCTION**. Use with caution!
 
