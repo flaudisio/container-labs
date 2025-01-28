@@ -1,0 +1,10 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+
+set -x
+
+export GATUS_DATA_DIR="${GATUS_DATA_DIR:-"/gatus/data"}"
+
+install -v -d -m 755 "$GATUS_DATA_DIR"
+
+exec gatus

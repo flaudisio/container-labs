@@ -1,0 +1,70 @@
+---
+name: gatus
+
+services:
+  consul-server:
+    image: hashicorp/consul:1.20
+    command: agent -config-dir=/consul/config
+    hostname: consul-server
+    restart: unless-stopped
+    volumes:
+      - ./consul-server/server.hcl:/consul/config/server.hcl:ro
+      - /srv/container-labs/gatus-consul/consul-server-data:/var/opt/consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+
+  gatus-01:
+    image: gatus-consul:latest
+    build:
+      context: ./gatus
+    restart: unless-stopped
+    volumes:
+      - ./consul-agent/client.hcl:/consul/config/client.hcl:ro
+      - ./templates/service.hcl.tpl:/templates/service.hcl.tpl:ro
+      - ./templates/config.yaml.tpl:/templates/config.yaml.tpl:ro
+      - /srv/container-labs/gatus-consul/gatus-01-data:/gatus/data
+    ports:
+      - "18001:8080"
+    environment:
+      ENVIRONMENT: sandbox
+      AWS_ACCOUNT_ALIAS: foo-sandbox
+      AWS_REGION: us-east-1
+      GATUS_LOG_LEVEL: INFO
+
+  gatus-02:
+    image: gatus-consul:latest
+    build:
+      context: ./gatus
+    restart: unless-stopped
+    volumes:
+      - ./consul-agent/client.hcl:/consul/config/client.hcl:ro
+      - ./templates/service.hcl.tpl:/templates/service.hcl.tpl:ro
+      - ./templates/config.yaml.tpl:/templates/config.yaml.tpl:ro
+      - /srv/container-labs/gatus-consul/gatus-02-data:/gatus/data
+    ports:
+      - "18002:8080"
+    environment:
+      ENVIRONMENT: sandbox
+      AWS_ACCOUNT_ALIAS: foo-sandbox
+      AWS_REGION: us-east-2
+      GATUS_LOG_LEVEL: INFO
+
+  gatus-03:
+    image: gatus-consul:latest
+    build:
+      context: ./gatus
+    restart: unless-stopped
+    volumes:
+      - ./consul-agent/client.hcl:/consul/config/client.hcl:ro
+      - ./templates/service.hcl.tpl:/templates/service.hcl.tpl:ro
+      - ./templates/config.yaml.tpl:/templates/config.yaml.tpl:ro
+      - /srv/container-labs/gatus-consul/gatus-03-data:/gatus/data
+    ports:
+      - "18003:8080"
+    environment:
+      ENVIRONMENT: sandbox
+      AWS_ACCOUNT_ALIAS: bar-sandbox
+      AWS_REGION: us-east-1
+      GATUS_LOG_LEVEL: INFO
