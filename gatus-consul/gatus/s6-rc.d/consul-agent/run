@@ -1,0 +1,25 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+
+set -x
+
+CONSUL_CONFIG_DIR="${CONSUL_CONFIG_DIR:-"/consul/config"}"
+CONSUL_SERVICE_TEMPLATE_FILE="${CONSUL_SERVICE_TEMPLATE_FILE:-"/templates/service.hcl.tpl"}"
+
+# Default values for template variables
+ENVIRONMENT="${ENVIRONMENT:-"undefined"}"
+AWS_ACCOUNT_ALIAS="${AWS_ACCOUNT_ALIAS:-"undefined"}"
+AWS_REGION="${AWS_REGION:-"undefined"}"
+HOSTNAME="${HOSTNAME:-"$( hostname -s )"}"
+
+install -v -d -m 755 "$CONSUL_CONFIG_DIR"
+
+sed \
+    -e "s|%ENVIRONMENT%|${ENVIRONMENT}|g" \
+    -e "s|%AWS_ACCOUNT_ALIAS%|${AWS_ACCOUNT_ALIAS}|g" \
+    -e "s|%AWS_REGION%|${AWS_REGION}|g" \
+    -e "s|%HOSTNAME%|${HOSTNAME}|g" \
+    "$CONSUL_SERVICE_TEMPLATE_FILE" \
+    > "${CONSUL_CONFIG_DIR}/service.hcl"
+
+exec consul agent -config-dir="$CONSUL_CONFIG_DIR"

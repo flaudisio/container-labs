@@ -1,0 +1,13 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+
+set -x
+
+GATUS_CONFIG_TEMPLATE_FILE="${GATUS_CONFIG_TEMPLATE_FILE:-"/templates/config.yaml.tpl"}"
+GATUS_CONFIG_FILE="${GATUS_CONFIG_PATH}/config.yaml"
+
+CONSUL_TEMPLATE_LOG_LEVEL="${CONSUL_TEMPLATE_LOG_LEVEL:-"info"}"
+
+install -v -d -m 755 "$GATUS_CONFIG_PATH"
+
+exec consul-template -template "${GATUS_CONFIG_TEMPLATE_FILE}:${GATUS_CONFIG_FILE}" -log-level "$CONSUL_TEMPLATE_LOG_LEVEL"
