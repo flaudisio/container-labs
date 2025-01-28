@@ -1,4 +1,7 @@
 {
+  "[dockercompose]": {
+    "editor.codeLens": false
+  },
   "files.associations": {
     "*.nomad": "hcl"
   }

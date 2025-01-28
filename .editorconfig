@@ -15,6 +15,9 @@ max_line_length = 80
 [*.{json,yml,yaml}{,.tpl}]
 indent_size = 2
 
+[*.sql]
+indent_size = 2
+
 [*.md]
 indent_size = 2
 max_line_length = 120
