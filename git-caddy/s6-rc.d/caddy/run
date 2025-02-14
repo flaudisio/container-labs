@@ -1,0 +1,14 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+
+set -e
+set -x
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-"/config"}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-"/data"}"
+
+mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
+
+chown -R "${PUID}:${PGID}" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
+
+exec s6-setuidgid "${PUID}:${PGID}" caddy run --config /etc/caddy/Caddyfile --adapter caddyfile

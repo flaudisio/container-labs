@@ -1,0 +1,21 @@
+:8080
+{
+  @git_cgi path_regexp "^.*/(HEAD|info/refs|objects/info/[^/]+|git-upload-pack)$"
+  @git_static path_regexp "^.*/objects/([0-9a-f]{2}/[0-9a-f]{38}|pack/pack-[0-9a-f]{40}\.(pack|idx))$"
+
+  handle @git_cgi {
+    reverse_proxy unix//var/run/fcgiwrap/fcgiwrap.socket {
+      transport fastcgi {
+        env GIT_PROJECT_ROOT /srv/git
+        env GIT_HTTP_EXPORT_ALL 1
+        env SCRIPT_FILENAME /usr/libexec/git-core/git-http-backend
+      }
+    }
+  }
+
+  handle @git_static {
+    file_server {
+      root /srv/git
+    }
+  }
+}

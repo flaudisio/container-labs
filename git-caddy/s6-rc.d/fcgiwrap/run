@@ -1,0 +1,13 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+
+set -e
+set -x
+
+export FCGI_DIR="${FCGI_DIR:-"/var/run/fcgiwrap"}"
+
+mkdir -p "$FCGI_DIR"
+
+chown -R "${PUID}:${PGID}" "$FCGI_DIR"
+
+exec s6-setuidgid "${PUID}:${PGID}" fcgiwrap -f -s "unix:${FCGI_DIR}/fcgiwrap.socket"
