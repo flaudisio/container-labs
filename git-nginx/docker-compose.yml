@@ -1,0 +1,14 @@
+---
+services:
+  nginx:
+    # image: nginx:stable-alpine
+    image: flaudisio/git-nginx-poc:latest
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./www/index.html:/var/www/index.html:ro
+      - "${HOME}/dr-git-repos:/srv/git"

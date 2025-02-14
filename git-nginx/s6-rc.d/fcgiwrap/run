@@ -1,0 +1,9 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+
+set -e
+set -x
+
+install -v -d -o nginx -g nginx /var/run/fcgiwrap
+
+exec s6-setuidgid nginx:nginx fcgiwrap -f -s unix:/var/run/fcgiwrap/fcgiwrap.socket
