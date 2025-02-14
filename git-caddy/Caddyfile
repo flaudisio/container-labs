@@ -1,5 +1,6 @@
 :8080
 {
+  # Ref: https://www.jamesatkins.com/posts/git-over-http-with-caddy/
   @git_cgi path_regexp "^.*/(HEAD|info/refs|objects/info/[^/]+|git-upload-pack)$"
   @git_static path_regexp "^.*/objects/([0-9a-f]{2}/[0-9a-f]{38}|pack/pack-[0-9a-f]{40}\.(pack|idx))$"
 

@@ -4,4 +4,8 @@
 set -e
 set -x
 
+# Ensure nginx user ID is updated
+groupmod -o -g "$PGID" nginx
+usermod -o -u "$PUID" nginx
+
 exec nginx -g 'daemon off;'

@@ -13,15 +13,13 @@ RUN set -ex \
  && apk add --no-cache \
         fcgiwrap \
         git \
-        git-daemon
+        git-daemon \
+        shadow
 
-# Configure services
-COPY s6-rc.d/fcgiwrap /etc/s6-overlay/s6-rc.d/fcgiwrap
-COPY s6-rc.d/nginx /etc/s6-overlay/s6-rc.d/nginx
+ENV PUID="1000" \
+    PGID="1000"
 
-# Enable services
-RUN set -ex \
- && touch /etc/s6-overlay/s6-rc.d/user/contents.d/fcgiwrap \
- && touch /etc/s6-overlay/s6-rc.d/user/contents.d/nginx
+# Configure and enable services
+COPY s6-rc.d/ /etc/s6-overlay/s6-rc.d/
 
 ENTRYPOINT ["/init"]
