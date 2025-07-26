@@ -1,0 +1,50 @@
+---
+defaults: &defaults
+  interval: 1m
+  conditions:
+    - "[CONNECTED] == true"
+  client:
+    network: ip4
+
+endpoints:
+  # AWS - ICMP
+  - name: S3 - us-east-1
+    url: icmp://s3.us-east-1.amazonaws.com
+    group: AWS - ICMP
+    <<: *defaults
+  - name: S3 - us-east-1 - IPv6
+    url: icmp://s3.dualstack.us-east-1.amazonaws.com
+    group: AWS - ICMP
+    <<: *defaults
+    client:
+      network: ip6
+  - name: S3 - us-east-2
+    url: icmp://s3.us-east-2.amazonaws.com
+    group: AWS - ICMP
+    <<: *defaults
+  - name: S3 - us-east-2 - IPv6
+    url: icmp://s3.dualstack.us-east-2.amazonaws.com
+    group: AWS - ICMP
+    <<: *defaults
+    client:
+      network: ip6
+
+  # AWS - TCP
+  - name: S3 - us-east-1
+    url: tcp://s3.us-east-1.amazonaws.com:443
+    group: AWS - TCP
+    <<: *defaults
+  # Ref: dig +short AAAA s3.dualstack.us-east-1.amazonaws.com | sort | head -n 1
+  - name: S3 - us-east-1 - IPv6
+    url: tcp://[2600:1fa0:80d0:d491:34d9:481e::]:443
+    group: AWS - TCP
+    <<: *defaults
+  - name: S3 - us-east-2
+    url: tcp://s3.us-east-2.amazonaws.com:443
+    group: AWS - TCP
+    <<: *defaults
+  # Ref: dig +short AAAA s3.dualstack.us-east-2.amazonaws.com | sort | head -n 1
+  - name: S3 - us-east-2 - IPv6
+    url: tcp://[2600:1fa0:6048:308:34db:6562::]:443
+    group: AWS - TCP
+    <<: *defaults

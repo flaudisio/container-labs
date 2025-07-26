@@ -1,0 +1,63 @@
+---
+dns-defaults: &dns_defaults
+  group: DNS
+  dns:
+    query-name: google.com
+    query-type: A
+  conditions:
+    - "[DNS_RCODE] == NOERROR"
+
+http-defaults: &http_defaults
+  group: HTTP
+  interval: 1m
+  conditions:
+    - "[STATUS] == 200"
+
+icmp-defaults: &icmp_defaults
+  group: ICMP
+  interval: 1m
+  conditions:
+    - "[CONNECTED] == true"
+
+tcp-defaults: &tcp_defaults
+  group: TCP
+  interval: 1m
+  conditions:
+    - "[CONNECTED] == true"
+
+endpoints:
+  # DNS
+  - name: Cloudflare
+    url: "1.1.1.1"
+    <<: *dns_defaults
+  - name: Google
+    url: "8.8.8.8"
+    <<: *dns_defaults
+
+  # HTTP
+  - name: Google Meet
+    url: https://meet.google.com
+    <<: *http_defaults
+  - name: GitHub
+    url: https://github.com
+    <<: *http_defaults
+  - name: UOL
+    url: https://uol.com.br
+    <<: *http_defaults
+
+  # ICMP
+  - name: UOL
+    url: icmp://uol.com.br
+    <<: *icmp_defaults
+
+  # TCP
+  - name: Digital Ocean API
+    url: tcp://api.digitalocean.com:443
+    <<: *tcp_defaults
+  - name: Google - IPv6
+    url: tcp://ipv6.google.com:443
+    <<: *tcp_defaults
+  # Ref: https://andshrew.github.io/PlayStation-Trophies/#/APIv2?id=api-documentation
+  - name: PSN API
+    url: tcp://m.np.playstation.com:443
+    <<: *tcp_defaults
