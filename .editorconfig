@@ -8,20 +8,23 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{nomad,hcl,tf,tfvars,tpl}]
+[*.{hcl,tf,tfvars}{,.erb,.j2,.jinja}]
 indent_size = 2
-max_line_length = 80
+max_line_length = 120
 
-[*.{json,yml,yaml}{,.tpl}]
+[*.{json,toml,yml,yaml}{,.tpl,.tftpl,.erb,.j2,.jinja}]
 indent_size = 2
 
-[*.sql]
-indent_size = 2
+[{go.mod,*.go}]
+indent_style = tab
 
 [*.md]
 indent_size = 2
-max_line_length = 120
+max_line_length = 100
 trim_trailing_whitespace = false
+
+[*.rb{,.erb,.j2,.jinja}]
+indent_size = 2
 
 [Makefile]
 indent_style = tab
