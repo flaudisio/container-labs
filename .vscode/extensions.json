@@ -1,6 +1,9 @@
 {
   "recommendations": [
+    "4ops.terraform",
+    "christian-kohler.path-intellisense",
     "EditorConfig.EditorConfig",
-    "hashicorp.hcl"
+    "ms-azuretools.vscode-containers",
+    "timonwong.shellcheck"
   ]
 }
