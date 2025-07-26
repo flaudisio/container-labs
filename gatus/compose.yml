@@ -11,6 +11,6 @@ services:
     environment:
       GATUS_CONFIG_PATH: /config
 
-networks:
-  default:
-    enable_ipv6: true
+# networks:
+#   default:
+#     enable_ipv6: true

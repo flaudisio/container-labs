@@ -54,9 +54,9 @@ endpoints:
   - name: Digital Ocean API
     url: tcp://api.digitalocean.com:443
     <<: *tcp_defaults
-  - name: Google - IPv6
-    url: tcp://ipv6.google.com:443
-    <<: *tcp_defaults
+  # - name: Google - IPv6
+  #   url: tcp://ipv6.google.com:443
+  #   <<: *tcp_defaults
   # Ref: https://andshrew.github.io/PlayStation-Trophies/#/APIv2?id=api-documentation
   - name: PSN API
     url: tcp://m.np.playstation.com:443
