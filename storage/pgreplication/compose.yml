@@ -1,5 +1,4 @@
-version: "2.4"
-
+---
 x-credentials:
   - &db_name ${POSTGRES_DATABASE}
   - &db_user ${POSTGRES_USER}
