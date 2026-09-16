@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,dotenv,windows,intellij,sublimetext,certificates,visualstudiocode,archives
-# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,dotenv,windows,intellij,sublimetext,certificates,visualstudiocode,archives
+# Created by https://www.toptal.com/developers/gitignore/api/vim,linux,macos,windows,archives,intellij,certificates,visualstudiocode,dotenv
+# Edit at https://www.toptal.com/developers/gitignore?templates=vim,linux,macos,windows,archives,intellij,certificates,visualstudiocode,dotenv
 
 ### Archives ###
 # It's better to unpack these files and commit the raw source because
@@ -207,38 +207,25 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
-### SublimeText ###
-# Cache files for Sublime Text
-*.tmlanguage.cache
-*.tmPreferences.cache
-*.stTheme.cache
+### Vim ###
+# Swap
+[._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
 
-# Workspace files are user-specific
-*.sublime-workspace
+# Session
+Session.vim
+Sessionx.vim
 
-# Project files should be checked into the repository, unless a significant
-# proportion of contributors will probably not be using Sublime Text
-# *.sublime-project
-
-# SFTP configuration file
-sftp-config.json
-sftp-config-alt*.json
-
-# Package control specific files
-Package Control.last-run
-Package Control.ca-list
-Package Control.ca-bundle
-Package Control.system-ca-bundle
-Package Control.cache/
-Package Control.ca-certs/
-Package Control.merged-ca-bundle
-Package Control.user-ca-bundle
-oscrypto-ca-bundle.crt
-bh_unicode_properties.cache
-
-# Sublime-github package stores a github token in this file
-# https://packagecontrol.io/packages/sublime-github
-GitHub.sublime-settings
+# Temporary
+.netrwhist
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un~
 
 ### VisualStudioCode ###
 .vscode/*
@@ -281,4 +268,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/linux,macos,dotenv,windows,intellij,sublimetext,certificates,visualstudiocode,archives
+# End of https://www.toptal.com/developers/gitignore/api/vim,linux,macos,windows,archives,intellij,certificates,visualstudiocode,dotenv

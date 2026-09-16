@@ -1,6 +1,6 @@
 [tools]
-shellcheck = "0.10"
-terragrunt = "latest"
+shellcheck = "0.11"
+terragrunt = "1"
 
 [tasks.pre-commit]
 description = "Run pre-commit"

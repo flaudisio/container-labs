@@ -3,6 +3,7 @@
     "editor.codeLens": false
   },
   "files.associations": {
+    "*.alloy": "hcl",
     "*.nomad": "hcl"
   }
 }
