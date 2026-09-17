@@ -89,7 +89,7 @@ Used for Nomad/Consul agent configs and `.nomad` job files.
 
 ## Directory layout
 
-```
+```text
 {category}/
   {srv-name}/
     compose.yml          # independent project
