@@ -1,0 +1,12 @@
+---
+# Ref: https://docs.openwebui.com/ecosystem/knowledge-base-sync
+defaults:
+  interval: 1h
+  concurrency: 4
+
+sources:
+  - name: example-docs
+    source: github:example/docs
+    kb-id: 11111111-1111-1111-1111-111111111111
+    filter:
+      include: ["docs/**", "README.md"]

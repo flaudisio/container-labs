@@ -1,0 +1,23 @@
+---
+# Ref: https://docs.openwebui.com/ecosystem/knowledge-base-sync/daemon
+services:
+  oikb:
+    image: ghcr.io/open-webui/oikb:0.4.0
+    command: daemon --config /app/.oikb.yaml
+    restart: unless-stopped
+    volumes:
+      - ./oikb.yaml:/app/.oikb.yaml:ro
+      - /srv/container-labs/oikb/data:/data
+    environment:
+      OPEN_WEBUI_URL: https://open-webui.example.com
+      OPEN_WEBUI_API_KEY: ${OPEN_WEBUI_API_KEY}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      OIKB_API_KEY: ${OIKB_API_KEY}
+      OIKB_CONFIG_DIR: /data
+      LOG_FORMAT: json
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
