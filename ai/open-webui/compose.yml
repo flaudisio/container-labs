@@ -1,0 +1,17 @@
+---
+# Ref: https://docs.openwebui.com/getting-started/quick-start
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:0.11.3
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    volumes:
+      - /srv/container-labs/open-webui/data:/app/backend/data
+    environment:
+      TZ: "America/Sao_Paulo"
+      # Ref: https://docs.openwebui.com/reference/env-configuration/
+      # Recommended for enhanced/agentic RAG experience
+      # ENABLE_KB_EXEC: "true"
+      # Pins KB content at a fixed position at the start, leveraging prompt caching
+      # RAG_SYSTEM_CONTEXT: "true"
