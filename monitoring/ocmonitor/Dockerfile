@@ -9,15 +9,17 @@ RUN set -ex \
  && wget -q -O /gosu "https://github.com/tianon/gosu/releases/download/${gosu_version}/gosu-${DL_ARCH}" \
  && wget -q -O /tini "https://github.com/krallin/tini/releases/download/v${tini_version}/tini-static-${DL_ARCH}"
 
-# Ref: https://github.com/Shlomob/ocmonitor-share/blob/main/Dockerfile
 FROM python:3.13-slim
 
 COPY --from=base --chown=root:root --chmod=0755 /gosu /bin/gosu
 COPY --from=base --chown=root:root --chmod=0755 /tini /bin/tini
 
+ARG ocmonitor_repo="https://github.com/flaudisio/ocmonitor-share"
+ARG ocmonitor_commit="058d4970a08cade528d6521d899db34a40f00ae8"
+
 RUN set -ex \
  && pip install --no-cache-dir \
-      'opencode-monitor' \
+      "opencode-monitor @ ${ocmonitor_repo}/archive/${ocmonitor_commit}.tar.gz" \
  && find /usr/local -depth -type d -name '__pycache__' -exec rm -rf '{}' \; \
  && rm -rf ~/.cache
 

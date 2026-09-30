@@ -1,5 +1,4 @@
 ---
-# Ref: https://github.com/Shlomob/ocmonitor-share/blob/main/docker-compose.yml
 services:
   ocmonitor:
     image: ocmonitor
