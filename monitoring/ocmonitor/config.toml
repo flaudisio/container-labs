@@ -1,0 +1,3 @@
+# Ref: https://ocmonitor.vercel.app/docs/configuration#full-configuration-options
+[paths]
+export_dir = "~/cache/ocmonitor-exports"

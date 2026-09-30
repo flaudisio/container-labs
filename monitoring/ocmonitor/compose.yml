@@ -1,0 +1,18 @@
+---
+# Ref: https://github.com/Shlomob/ocmonitor-share/blob/main/docker-compose.yml
+services:
+  ocmonitor:
+    image: ocmonitor
+    build:
+      context: .
+    command: ocmonitor --config /app/config.toml metrics
+    restart: unless-stopped
+    ports:
+      - "9904:9090"
+    volumes:
+      # OpenCode data
+      - ${HOME}/.local/share/opencode:/app/.local/share/opencode
+      # ocmonitor config + cache
+      - ./config.toml:/app/config.toml
+      - /srv/container-labs/ocmonitor/data/.config:/app/.config
+      - /srv/container-labs/ocmonitor/data/.cache:/app/.cache
