@@ -16,7 +16,7 @@ services:
     ports:
       - "8090:8000"
     environment:
-      GRAFANA_URL: https://grafana.flaudisio.cloud
+      GRAFANA_URL: ${GRAFANA_URL}
       GRAFANA_ORG_ID: "1"
       GRAFANA_SERVICE_ACCOUNT_TOKEN: ${GRAFANA_SERVICE_ACCOUNT_TOKEN}
       MCP_GRAFANA_SERVER_TOKEN: ${MCP_GRAFANA_SERVER_TOKEN}
