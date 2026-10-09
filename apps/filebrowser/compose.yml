@@ -1,0 +1,15 @@
+---
+services:
+  filebrowser:
+    image: gtstef/filebrowser:2.1.0-beta
+    container_name: filebrowser
+    restart: unless-stopped
+    user: 1000:1000
+    ports:
+      - "8989:80"
+    volumes:
+      - ./config.yaml:/config.yaml:ro
+      - ./data:/home/filebrowser/data
+      - ./files:/files
+    environment:
+      FILEBROWSER_CONFIG: /config.yaml

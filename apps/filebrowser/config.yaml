@@ -1,0 +1,19 @@
+---
+# Ref: https://filebrowserquantum.com/en/docs/configuration/configuration-overview/
+server:
+  database:
+    path: data/filebrowser.sqlite
+  cacheDir: data/tmp
+  maxArchiveSize: 50
+  sources:
+    - path: /files
+auth:
+  tokenExpirationHours: 2
+  methods:
+    password:
+      enabled: true
+      adminUsername: admin
+      minLength: 32
+      signup: false
+frontend:
+  name: Media Browser
