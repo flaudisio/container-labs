@@ -49,6 +49,14 @@ sysctls:
 - Placeholder convention: `xxxxxx` (e.g. `TOKEN=xxxxxx`)
 - `.env.example` is committed with `xxxxxx` placeholders (never real secrets)
 
+### URLs & hostnames
+
+- Never hardcode real/private service URLs or hostnames in `compose.yml` — reference a variable
+  instead (e.g. `PROMETHEUS_URL: ${PROMETHEUS_URL}`)
+- Commit the variable in `.env.example` with a generic placeholder domain, e.g.
+  `PROMETHEUS_URL=https://prometheus.example.com`
+- Public upstream citations in `# Ref:` comments are exempt
+
 ## Tooling & validation
 
 - **pre-commit**: 10 hooks (trailing-whitespace, end-of-file-fixer, yamllint --strict, shellcheck, etc.)
@@ -94,6 +102,7 @@ Used for Nomad/Consul agent configs and `.nomad` job files.
   {srv-name}/
     compose.yml          # independent project
     .env                 # secrets (gitignored)
+    .env.example         # committed template (xxxxxx + example URLs)
     extra-configs/       # volumes, Dockerfiles, scripts as needed
 
 000-deprecated/
