@@ -46,8 +46,8 @@ sysctls:
 ### Secrets & .env
 
 - `.env` is gitignored — place it per-directory with `${VAR}` references in compose
-- Placeholder convention: `CHANGEME` or `changeme` (e.g. `TOKEN=CHANGEME`)
-- No `.env.example` convention exists — if you create one, use real defaults not secrets
+- Placeholder convention: `xxxxxx` (e.g. `TOKEN=xxxxxx`)
+- `.env.example` is committed with `xxxxxx` placeholders (never real secrets)
 
 ## Tooling & validation
 
