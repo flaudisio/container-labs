@@ -1,0 +1,28 @@
+---
+# Ref: https://github.com/grafana/mcp-grafana
+services:
+  mcp:
+    image: grafana/mcp-grafana:2.0.1-alpine
+    entrypoint:
+      - /app/mcp-grafana
+    command:
+      - --transport
+      - streamable-http
+      - --address
+      - 0.0.0.0:8000
+      - --allowed-hosts
+      - localhost:8090,127.0.0.1:8090,localhost:8000,127.0.0.1:8000
+    restart: unless-stopped
+    ports:
+      - "8090:8000"
+    environment:
+      GRAFANA_URL: https://grafana.flaudisio.cloud
+      GRAFANA_ORG_ID: "1"
+      GRAFANA_SERVICE_ACCOUNT_TOKEN: ${GRAFANA_SERVICE_ACCOUNT_TOKEN}
+      MCP_GRAFANA_SERVER_TOKEN: ${MCP_GRAFANA_SERVER_TOKEN}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
