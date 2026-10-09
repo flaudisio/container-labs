@@ -57,6 +57,11 @@ sysctls:
   `PROMETHEUS_URL=https://prometheus.example.com`
 - Public upstream citations in `# Ref:` comments are exempt
 
+### Runtime data
+
+- Host bind-mount dirs holding runtime/user data (SQLite DBs, caches, uploads) are gitignored
+  via a per-stack `.gitignore` (e.g. `data/`, `files/`)
+
 ## Tooling & validation
 
 - **pre-commit**: 10 hooks (trailing-whitespace, end-of-file-fixer, yamllint --strict, shellcheck, etc.)
@@ -103,6 +108,7 @@ Used for Nomad/Consul agent configs and `.nomad` job files.
     compose.yml          # independent project
     .env                 # secrets (gitignored)
     .env.example         # committed template (xxxxxx + example URLs)
+    .gitignore           # ignore runtime data dirs (data/, files/, ...)
     extra-configs/       # volumes, Dockerfiles, scripts as needed
 
 000-deprecated/
