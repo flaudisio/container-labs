@@ -36,12 +36,36 @@ sysctls:
 | `volumes:` | Host paths: `/srv/container-labs/{app}/...`. Config: `./file:/container/path:ro` |
 | `container_name:` | Always set when used. Hyphenated or underscored matching the app |
 | `networks:` | Default bridge is the norm. `network_mode: host` for system services (plex, frps, adguardhome). `external: true` for Traefik ingress |
-| `healthcheck:` | `["CMD", ...]` or `["CMD-SHELL", "..."]`. Include `interval/timeout/retries/start_period` |
+| `healthcheck:` | `["CMD", ...]` or `["CMD-SHELL", "..."]`. Include `interval/timeout/retries/start_period`. Postgres: `pg_isready` (below) |
 | `depends_on:` | Simple list by default. `condition: service_healthy` for DBs; `condition: service_completed_successfully` for init containers |
 | `environment:` | Key-value map (dominant) or `KEY=VALUE` list format. Env vars from `.env` via `${VAR}` |
 | YAML anchors | `x-credentials:` + `&var` / `*var` for DB credential reuse |
 | Comments | `# Ref: https://...` to cite upstream. `# NOTE:`, `# HACK:`, `# TODO:` for notes |
 | `version:` | Omit in new files |
+
+### Postgres healthcheck & dependency
+
+All Postgres services use the same `pg_isready` check, and dependents wait on it:
+
+```yaml
+# postgres service
+healthcheck:
+  test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+  interval: 10s
+  timeout: 5s
+  retries: 5
+
+# dependent service
+depends_on:
+  postgres:
+    condition: service_healthy
+```
+
+- `$$` defers expansion to the container's shell instead of `docker compose up`; quote the values.
+- Use the default Unix socket — do not add `-h localhost`.
+- Use the container's own DB variable when it is not `POSTGRES_DB`, e.g. `POSTGRES_DATABASE`.
+- Compose cannot mix list and map form in one `depends_on`; write healthcheck-less co-deps
+  (redis, etc.) as `condition: service_started`.
 
 ### Secrets & .env
 
