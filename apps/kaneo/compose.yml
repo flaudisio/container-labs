@@ -1,0 +1,39 @@
+---
+# Ref: https://kaneo.app/docs/core/installation/docker-compose
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - /srv/container-labs/kaneo/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: kaneo
+      POSTGRES_DB: kaneo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kaneo:
+    image: ghcr.io/usekaneo/kaneo:2.39.0
+    container_name: kaneo
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5173:5173"
+    environment:
+      POSTGRES_DB: kaneo
+      POSTGRES_USER: kaneo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET in .env}
+      KANEO_CLIENT_URL: ${KANEO_CLIENT_URL:-http://localhost:5173}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-Y", "off", "--quiet", "--spider", "http://127.0.0.1:5173/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
