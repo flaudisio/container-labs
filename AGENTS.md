@@ -14,7 +14,7 @@ Compose + Nomad test/lab configurations. Every directory is an independent proje
 image:
 command: / entrypoint:     # if present — right after image
 restart: unless-stopped    # universal; never anything else
-container_name:            # set explicitly when used
+container_name:            # omit by default; only when a stable name is needed
 user:                      # if needed
 cap_add: / hostname: / network_mode: / pid: / stop_grace_period:
 ports:                     # quoted string "PORT:PORT" dominant; "127.0.0.1:P:P" for reverse proxy
@@ -34,7 +34,7 @@ sysctls:
 | `restart:` | `unless-stopped` always |
 | `ports:` | `"HOST:CONTAINER"` quoted string (dominant). Unquoted integers and UDP/TCP suffix also seen |
 | `volumes:` | Host paths: `/srv/container-labs/{app}/...`. Config: `./file:/container/path:ro` |
-| `container_name:` | Always set when used. Hyphenated or underscored matching the app |
+| `container_name:` | Omit by default. Add only when a stable/predictable name is required; then hyphenated or underscored, matching the app |
 | `networks:` | Default bridge is the norm. `network_mode: host` for system services (plex, frps, adguardhome). `external: true` for Traefik ingress |
 | `healthcheck:` | `["CMD", ...]` or `["CMD-SHELL", "..."]`. Include `interval/timeout/retries/start_period`. Postgres: `pg_isready` (below) |
 | `depends_on:` | Simple list by default. `condition: service_healthy` for DBs; `condition: service_completed_successfully` for init containers |
