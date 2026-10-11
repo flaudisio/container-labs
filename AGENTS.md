@@ -88,10 +88,10 @@ depends_on:
 
 ## Tooling & validation
 
-- **pre-commit**: 10 hooks (trailing-whitespace, end-of-file-fixer, yamllint --strict, shellcheck, etc.)
+- **prek**: 10 hooks (trailing-whitespace, end-of-file-fixer, yamllint --strict, shellcheck, etc.)
 
   ```bash
-  mise run pre-commit              # pre-commit run --all-files --color always
+  mise run lint                    # prek run --all-files --color always
   ```
 
   yamllint runs in `--strict` mode — do not leave warnings.
