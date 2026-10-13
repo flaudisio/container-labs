@@ -136,3 +136,5 @@ services:
       MCP_PORT: "9000"
       MCP_TRANSPORT: http
       MCP_LOG_LEVEL: INFO
+    depends_on:
+      - semaphore
