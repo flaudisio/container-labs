@@ -1,0 +1,175 @@
+---
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    user: 500:500
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - 80:8080
+    environment:
+      CADDY_PORT: "8080"
+      SEMAPHORE_HOST: semaphore
+      SEMAPHORE_PORT: "3000"
+
+  postgres-server:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    volumes:
+      - /srv/container-labs/semaphore/postgres-server:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  semaphore:
+    image: flaudisio/semaphore-server:2.19.16
+    restart: unless-stopped
+    ports:
+      - 17300:3000
+    volumes:
+      - /srv/container-labs/semaphore/server-config:/etc/semaphore
+      - /srv/container-labs/semaphore/server-tmp:/tmp/semaphore
+    environment:
+      # SEMAPHORE_CLI_EXTRA_ARGS: --log-level debug
+      TZ: America/Sao_Paulo
+      SEMAPHORE_WEB_ROOT: ${SEMAPHORE_WEB_ROOT}
+      SEMAPHORE_TMP_PATH: /tmp/semaphore
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB_HOST: postgres-server
+      SEMAPHORE_DB_NAME: ${DB_NAME}
+      SEMAPHORE_DB_USER: ${DB_USER}
+      SEMAPHORE_DB_PASS: ${DB_PASS}
+      SEMAPHORE_DB_OPTIONS: '{"sslmode": "disable"}'
+      SEMAPHORE_ADMIN: ${SEMAPHORE_ADMIN}
+      SEMAPHORE_ADMIN_NAME: ${SEMAPHORE_ADMIN_NAME}
+      SEMAPHORE_ADMIN_EMAIL: ${SEMAPHORE_ADMIN_EMAIL}
+      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_ACCESS_KEY_ENCRYPTION}
+      SEMAPHORE_COOKIE_HASH: ${SEMAPHORE_COOKIE_HASH}
+      SEMAPHORE_COOKIE_ENCRYPTION: ${SEMAPHORE_COOKIE_ENCRYPTION}
+      SEMAPHORE_USE_REMOTE_RUNNER: "true"
+      # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: ${SEMAPHORE_RUNNER_REGISTRATION_TOKEN}
+      SEMAPHORE_SCHEDULE_TIMEZONE: America/Sao_Paulo
+      SEMAPHORE_TELEGRAM_ALERT: "true"
+      SEMAPHORE_TELEGRAM_CHAT: ${SEMAPHORE_TELEGRAM_CHAT}
+      SEMAPHORE_TELEGRAM_TOKEN: ${SEMAPHORE_TELEGRAM_TOKEN}
+      # Semaphore 2.20+ - https://semaphoreui.com/docs/admin-guide/metrics
+      # SEMAPHORE_METRICS_ENABLED: "true"
+      # SEMAPHORE_METRICS_USERNAME: metrics
+      # SEMAPHORE_METRICS_PASSWORD: metrics
+    depends_on:
+      postgres-server:
+        condition: service_healthy
+    networks:
+      default:
+        aliases:
+          - semaphore.local
+
+  runner-01:
+    image: flaudisio/semaphore-runner:2.19.16-ansible-2.20
+    restart: unless-stopped
+    volumes:
+      - /srv/container-labs/semaphore/runner-01-config:/etc/semaphore
+      - /srv/container-labs/semaphore/runner-01-tmp:/tmp/semaphore
+      # - ./runners-default.key:/tmp/runners-default.key:ro
+    environment:
+      # SEMAPHORE_CLI_EXTRA_ARGS: --log-level debug
+      TZ: America/Sao_Paulo
+      SEMAPHORE_WEB_ROOT: http://semaphore.local:3000
+      SEMAPHORE_TMP_PATH: /tmp/semaphore
+      # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: ${SEMAPHORE_RUNNER_REGISTRATION_TOKEN}
+      SEMAPHORE_RUNNER_TOKEN: ${SEMAPHORE_RUNNER_TOKEN}
+      # SEMAPHORE_RUNNER_PRIVATE_KEY_FILE: /tmp/runners-default.key
+    depends_on:
+      - semaphore
+
+  postgres-backups:
+    image: prodrigestivill/postgres-backup-local:18-alpine
+    restart: unless-stopped
+    user: postgres:postgres
+    volumes:
+      # NOTE: see the README.md file for volume setup instructions
+      - /srv/container-labs/semaphore/postgres-backups:/backups
+    environment:
+      TZ: America/Sao_Paulo
+      POSTGRES_HOST: postgres-server
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_EXTRA_OPTS: -Z3 --schema=public --large-objects
+      SCHEDULE: "5 */2 * * *"
+      BACKUP_DIR: /backups
+      BACKUP_ON_START: "false"
+      BACKUP_KEEP_DAYS: "30"
+      BACKUP_KEEP_WEEKS: "12"
+      BACKUP_KEEP_MONTHS: "6"
+      HEALTHCHECK_PORT: "8080"
+    depends_on:
+      postgres-server:
+        condition: service_healthy
+
+  # Refs:
+  # - https://github.com/vremenar/semaphore-prometheus-exporter/blob/main/docker-compose.yml
+  # - https://github.com/vremenar/semaphore-prometheus-exporter/#configuration-reference
+  exporter:
+    image: vremenar/semaphore-prometheus-exporter:1.3.0
+    restart: unless-stopped
+    user: 593:593
+    ports:
+      - 17900:9090
+    volumes:
+      - /srv/container-labs/semaphore/exporter:/data
+    environment:
+      TZ: America/Sao_Paulo
+      SEMAPHORE_URL: http://semaphore:3000
+      SEMAPHORE_API_TOKEN: ${SEMAPHORE_EXPORTER_API_TOKEN}
+      LISTEN_ADDRESS: :9090
+      SCRAPE_INTERVAL: 1m
+      MAX_EVENTS: "100"
+      HTTP_TIMEOUT: 5s
+      INSECURE_SKIP_VERIFY: "false"
+      CACHE_FILE: /data/cache.json
+      LOG_LEVEL: info
+    depends_on:
+      - semaphore
+
+  mcp:
+    image: ghcr.io/cloin/semaphore-mcp:1.0.6
+    restart: unless-stopped
+    ports:
+      - "9500:9000"
+    environment:
+      SEMAPHORE_URL: http://semaphore:3000
+      SEMAPHORE_API_TOKEN: ${SEMAPHORE_MCP_API_TOKEN}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: "9000"
+      MCP_TRANSPORT: http
+
+  # Required for Semaphore < 2.18.25
+  # Ref: https://github.com/semaphoreui/semaphore/issues/3941
+  autoheal:
+    image: docker:cli
+    entrypoint: [sh, /autoheal.sh]
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./autoheal/runner-autoheal-v2.sh:/autoheal.sh:ro
+    environment:
+      CONTAINER_NAME: semaphore-runner-01-1
+      INTERVAL: "30"
+      TRIGGER_TYPE: connections  # timer
+      CONNS_THRESHOLD: "4500"
+      TIMER_INTERVAL: "1200"
+      ERROR_REGEX: "connect: cannot assign requested address"
+    # pid: service:runner-01
+    # network_mode: service:runner-01
+    # depends_on:
+    #   - runner-01
