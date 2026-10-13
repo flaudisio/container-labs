@@ -6,9 +6,9 @@ services:
     volumes:
       - /srv/container-labs/semaphore/postgres-server:/var/lib/postgresql
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
       interval: 10s
@@ -24,15 +24,14 @@ services:
       - /srv/container-labs/semaphore/server-config:/etc/semaphore
       - /srv/container-labs/semaphore/server-tmp:/tmp/semaphore
     environment:
-      # SEMAPHORE_CLI_EXTRA_ARGS: --log-level debug
       TZ: America/Sao_Paulo
       SEMAPHORE_WEB_ROOT: ${SEMAPHORE_WEB_ROOT}
       SEMAPHORE_TMP_PATH: /tmp/semaphore
       SEMAPHORE_DB_DIALECT: postgres
       SEMAPHORE_DB_HOST: postgres-server
-      SEMAPHORE_DB_NAME: ${DB_NAME}
-      SEMAPHORE_DB_USER: ${DB_USER}
-      SEMAPHORE_DB_PASS: ${DB_PASS}
+      SEMAPHORE_DB_NAME: ${POSTGRES_DB}
+      SEMAPHORE_DB_USER: ${POSTGRES_USER}
+      SEMAPHORE_DB_PASS: ${POSTGRES_PASSWORD}
       SEMAPHORE_DB_OPTIONS: '{"sslmode": "disable"}'
       SEMAPHORE_ADMIN: ${SEMAPHORE_ADMIN}
       SEMAPHORE_ADMIN_NAME: ${SEMAPHORE_ADMIN_NAME}
@@ -42,7 +41,6 @@ services:
       SEMAPHORE_COOKIE_HASH: ${SEMAPHORE_COOKIE_HASH}
       SEMAPHORE_COOKIE_ENCRYPTION: ${SEMAPHORE_COOKIE_ENCRYPTION}
       SEMAPHORE_USE_REMOTE_RUNNER: "true"
-      # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: ${SEMAPHORE_RUNNER_REGISTRATION_TOKEN}
       SEMAPHORE_SCHEDULE_TIMEZONE: America/Sao_Paulo
       SEMAPHORE_TELEGRAM_ALERT: "true"
       SEMAPHORE_TELEGRAM_CHAT: ${SEMAPHORE_TELEGRAM_CHAT}
@@ -65,15 +63,13 @@ services:
     volumes:
       - /srv/container-labs/semaphore/runner-01-config:/etc/semaphore
       - /srv/container-labs/semaphore/runner-01-tmp:/tmp/semaphore
-      # - ./runners-default.key:/tmp/runners-default.key:ro
+      - ./runners-default.key:/tmp/runners-default.key:ro
     environment:
-      # SEMAPHORE_CLI_EXTRA_ARGS: --log-level debug
       TZ: America/Sao_Paulo
       SEMAPHORE_WEB_ROOT: http://semaphore.local:3000
       SEMAPHORE_TMP_PATH: /tmp/semaphore
-      # SEMAPHORE_RUNNER_REGISTRATION_TOKEN: ${SEMAPHORE_RUNNER_REGISTRATION_TOKEN}
       SEMAPHORE_RUNNER_TOKEN: ${SEMAPHORE_RUNNER_TOKEN}
-      # SEMAPHORE_RUNNER_PRIVATE_KEY_FILE: /tmp/runners-default.key
+      SEMAPHORE_RUNNER_PRIVATE_KEY_FILE: /tmp/runners-default.key
     depends_on:
       - semaphore
 
@@ -88,9 +84,9 @@ services:
       TZ: America/Sao_Paulo
       POSTGRES_HOST: postgres-server
       POSTGRES_PORT: "5432"
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_EXTRA_OPTS: -Z3 --schema=public --large-objects
       SCHEDULE: "5 */2 * * *"
       BACKUP_DIR: /backups
@@ -116,7 +112,7 @@ services:
       - /srv/container-labs/semaphore/exporter:/data
     environment:
       TZ: America/Sao_Paulo
-      SEMAPHORE_URL: http://semaphore:3000
+      SEMAPHORE_URL: http://semaphore.local:3000
       SEMAPHORE_API_TOKEN: ${SEMAPHORE_EXPORTER_API_TOKEN}
       LISTEN_ADDRESS: :9090
       SCRAPE_INTERVAL: 1m
@@ -134,7 +130,7 @@ services:
     ports:
       - "9500:9000"
     environment:
-      SEMAPHORE_URL: http://semaphore:3000
+      SEMAPHORE_URL: http://semaphore.local:3000
       SEMAPHORE_API_TOKEN: ${SEMAPHORE_MCP_API_TOKEN}
       MCP_HOST: 0.0.0.0
       MCP_PORT: "9000"
