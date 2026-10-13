@@ -1,6 +1,0 @@
-:{$CADDY_PORT:8080}
-{
-  reverse_proxy {$SEMAPHORE_HOST:semaphore}:{$SEMAPHORE_PORT:3000} {
-    header_up X-Real-IP {client_ip}
-  }
-}

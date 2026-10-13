@@ -1,18 +1,5 @@
 ---
 services:
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    user: 500:500
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-    ports:
-      - 80:8080
-    environment:
-      CADDY_PORT: "8080"
-      SEMAPHORE_HOST: semaphore
-      SEMAPHORE_PORT: "3000"
-
   postgres-server:
     image: postgres:18-alpine
     restart: unless-stopped
@@ -152,24 +139,3 @@ services:
       MCP_HOST: 0.0.0.0
       MCP_PORT: "9000"
       MCP_TRANSPORT: http
-
-  # Required for Semaphore < 2.18.25
-  # Ref: https://github.com/semaphoreui/semaphore/issues/3941
-  autoheal:
-    image: docker:cli
-    entrypoint: [sh, /autoheal.sh]
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./autoheal/runner-autoheal-v2.sh:/autoheal.sh:ro
-    environment:
-      CONTAINER_NAME: semaphore-runner-01-1
-      INTERVAL: "30"
-      TRIGGER_TYPE: connections  # timer
-      CONNS_THRESHOLD: "4500"
-      TIMER_INTERVAL: "1200"
-      ERROR_REGEX: "connect: cannot assign requested address"
-    # pid: service:runner-01
-    # network_mode: service:runner-01
-    # depends_on:
-    #   - runner-01
