@@ -139,3 +139,4 @@ services:
       MCP_HOST: 0.0.0.0
       MCP_PORT: "9000"
       MCP_TRANSPORT: http
+      MCP_LOG_LEVEL: INFO
