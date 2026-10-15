@@ -70,8 +70,30 @@ services:
       SEMAPHORE_TMP_PATH: /tmp/semaphore
       SEMAPHORE_RUNNER_TOKEN: ${SEMAPHORE_RUNNER_TOKEN}
       SEMAPHORE_RUNNER_PRIVATE_KEY_FILE: /tmp/runners-default.key
+      SEMAPHORE_FORWARDED_ENV_VARS: >-
+        [
+          "ANSIBLE_GALAXY_SERVER_LIST",
+          "ANSIBLE_GALAXY_SERVER_LOCAL_URL",
+          "ANSIBLE_GALAXY_SERVER_COMMUNITY_URL"
+        ]
+      ANSIBLE_GALAXY_SERVER_LIST: local,community
+      ANSIBLE_GALAXY_SERVER_LOCAL_URL: http://galaxy-proxy
+      ANSIBLE_GALAXY_SERVER_COMMUNITY_URL: https://galaxy.ansible.com
     depends_on:
       - semaphore
+
+  # Ref: https://github.com/ctrliq/ascender-galaxy-proxy
+  galaxy-proxy:
+    image: ghcr.io/ctrliq/ascender-galaxy-proxy:1.0.3
+    restart: unless-stopped
+    user: 802:802
+    volumes:
+      - /srv/container-labs/semaphore/galaxy-proxy-cache:/app/.cache
+    environment:
+      URL: http://galaxy-proxy
+      UPSTREAM_BASEURL: https://galaxy.ansible.com
+    healthcheck:
+      disable: true
 
   postgres-backups:
     image: prodrigestivill/postgres-backup-local:18-alpine
