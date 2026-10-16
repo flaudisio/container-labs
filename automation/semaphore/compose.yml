@@ -58,7 +58,7 @@ services:
           - semaphore.local
 
   runner-01:
-    image: flaudisio/semaphore-runner:2.19.16-ansible-2.20
+    image: flaudisio/semaphore-runner:2.19.16-ansible-2.21
     restart: unless-stopped
     volumes:
       - /srv/container-labs/semaphore/runner-01-config:/etc/semaphore
