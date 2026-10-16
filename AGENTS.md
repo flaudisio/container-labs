@@ -51,7 +51,7 @@ All Postgres services use the same `pg_isready` check, and dependents wait on it
 # postgres service
 healthcheck:
   test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
-  interval: 10s
+  interval: 5s
   timeout: 5s
   retries: 5
 
