@@ -14,8 +14,8 @@ FROM python:3.13-slim
 COPY --from=base --chown=root:root --chmod=0755 /gosu /bin/gosu
 COPY --from=base --chown=root:root --chmod=0755 /tini /bin/tini
 
-ARG ocmonitor_repo="https://github.com/flaudisio/ocmonitor-share"
-ARG ocmonitor_commit="ff360b143b7f66440795fe055dea3a29f4ab66c8"
+ARG ocmonitor_repo="https://github.com/Shlomob/ocmonitor-share"
+ARG ocmonitor_commit="refs/tags/1.0.5"
 
 RUN set -ex \
  && pip install --no-cache-dir \
