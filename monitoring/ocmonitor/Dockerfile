@@ -15,7 +15,7 @@ COPY --from=base --chown=root:root --chmod=0755 /gosu /bin/gosu
 COPY --from=base --chown=root:root --chmod=0755 /tini /bin/tini
 
 ARG ocmonitor_repo="https://github.com/flaudisio/ocmonitor-share"
-ARG ocmonitor_commit="058d4970a08cade528d6521d899db34a40f00ae8"
+ARG ocmonitor_commit="ff360b143b7f66440795fe055dea3a29f4ab66c8"
 
 RUN set -ex \
  && pip install --no-cache-dir \
