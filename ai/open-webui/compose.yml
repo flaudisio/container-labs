@@ -2,16 +2,24 @@
 # Ref: https://docs.openwebui.com/getting-started/quick-start
 services:
   openwebui:
-    image: ghcr.io/open-webui/open-webui:0.11.3
+    image: ghcr.io/open-webui/open-webui:0.13.3
     restart: unless-stopped
     ports:
       - "3000:8080"
     volumes:
       - /srv/container-labs/open-webui/data:/app/backend/data
     environment:
-      TZ: "America/Sao_Paulo"
       # Ref: https://docs.openwebui.com/reference/env-configuration/
+      TZ: America/Sao_Paulo
       # Recommended for enhanced/agentic RAG experience
-      # ENABLE_KB_EXEC: "true"
+      ENABLE_KB_EXEC: "true"
       # Pins KB content at a fixed position at the start, leveraging prompt caching
-      # RAG_SYSTEM_CONTEXT: "true"
+      RAG_SYSTEM_CONTEXT: "true"
+      # HTTPS/reverse proxy
+      # https://docs.openwebui.com/troubleshooting/connection-error/#required-configuration-for-https--reverse-proxies
+      WEBUI_URL: ${WEBUI_URL}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN}
+      WEBUI_SESSION_COOKIE_SECURE: "true"
+      WEBUI_AUTH_COOKIE_SECURE: "true"
+      WEBUI_SESSION_COOKIE_SAME_SITE: strict
+      WEBUI_AUTH_COOKIE_SAME_SITE: strict
