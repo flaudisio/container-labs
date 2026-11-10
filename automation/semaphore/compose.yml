@@ -16,7 +16,7 @@ services:
       retries: 5
 
   semaphore:
-    image: flaudisio/semaphore-server:2.19.16
+    image: flaudisio/semaphore-server:2.20.23
     restart: unless-stopped
     ports:
       - 17300:3000
@@ -25,11 +25,12 @@ services:
       - /srv/container-labs/semaphore/server-tmp:/tmp/semaphore
     environment:
       TZ: America/Sao_Paulo
+      # Ref: https://semaphoreui.com/docs/reference/configuration
       SEMAPHORE_WEB_ROOT: ${SEMAPHORE_WEB_ROOT}
       SEMAPHORE_TMP_PATH: /tmp/semaphore
       SEMAPHORE_DB_DIALECT: postgres
       SEMAPHORE_DB_HOST: postgres-server
-      SEMAPHORE_DB_NAME: ${POSTGRES_DB}
+      SEMAPHORE_DB: ${POSTGRES_DB}
       SEMAPHORE_DB_USER: ${POSTGRES_USER}
       SEMAPHORE_DB_PASS: ${POSTGRES_PASSWORD}
       SEMAPHORE_DB_OPTIONS: '{"sslmode": "disable"}'
@@ -40,15 +41,14 @@ services:
       SEMAPHORE_ACCESS_KEY_ENCRYPTION: ${SEMAPHORE_ACCESS_KEY_ENCRYPTION}
       SEMAPHORE_COOKIE_HASH: ${SEMAPHORE_COOKIE_HASH}
       SEMAPHORE_COOKIE_ENCRYPTION: ${SEMAPHORE_COOKIE_ENCRYPTION}
-      SEMAPHORE_USE_REMOTE_RUNNER: "true"
+      SEMAPHORE_DEFAULT_GLOBAL_RUNNERS_MODE: prefer
       SEMAPHORE_SCHEDULE_TIMEZONE: America/Sao_Paulo
       SEMAPHORE_TELEGRAM_ALERT: "true"
       SEMAPHORE_TELEGRAM_CHAT: ${SEMAPHORE_TELEGRAM_CHAT}
       SEMAPHORE_TELEGRAM_TOKEN: ${SEMAPHORE_TELEGRAM_TOKEN}
-      # Semaphore 2.20+ - https://semaphoreui.com/docs/admin-guide/metrics
-      # SEMAPHORE_METRICS_ENABLED: "true"
-      # SEMAPHORE_METRICS_USERNAME: metrics
-      # SEMAPHORE_METRICS_PASSWORD: metrics
+      SEMAPHORE_AUDIT_ENABLED: "true"
+      SEMAPHORE_AUDIT_INSTANCE_ID: main
+      SEMAPHORE_AUDIT_RETENTION_DAYS: 7
     depends_on:
       postgres-server:
         condition: service_healthy
@@ -58,18 +58,16 @@ services:
           - semaphore.local
 
   runner-01:
-    image: flaudisio/semaphore-runner:2.19.16-ansible-2.21
+    image: flaudisio/semaphore-runner:2.20.23-ansible-2.21
     restart: unless-stopped
     volumes:
       - /srv/container-labs/semaphore/runner-01-config:/etc/semaphore
       - /srv/container-labs/semaphore/runner-01-tmp:/tmp/semaphore
-      - ./runners-default.key:/tmp/runners-default.key:ro
     environment:
       TZ: America/Sao_Paulo
       SEMAPHORE_WEB_ROOT: http://semaphore.local:3000
       SEMAPHORE_TMP_PATH: /tmp/semaphore
       SEMAPHORE_RUNNER_TOKEN: ${SEMAPHORE_RUNNER_TOKEN}
-      SEMAPHORE_RUNNER_PRIVATE_KEY_FILE: /tmp/runners-default.key
       SEMAPHORE_FORWARDED_ENV_VARS: >-
         [
           "ANSIBLE_GALAXY_SERVER_LIST",
@@ -125,7 +123,7 @@ services:
   # - https://github.com/vremenar/semaphore-prometheus-exporter/blob/main/docker-compose.yml
   # - https://github.com/vremenar/semaphore-prometheus-exporter/#configuration-reference
   exporter:
-    image: vremenar/semaphore-prometheus-exporter:1.3.0
+    image: vremenar/semaphore-prometheus-exporter:1.4.0
     restart: unless-stopped
     user: 593:593
     ports:
