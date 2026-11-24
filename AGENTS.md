@@ -141,35 +141,26 @@ Used for Nomad/Consul agent configs and `.nomad` job files.
 
 ## Directory layout
 
+Every stack lives flat under `services/`, named after the service it runs:
+
 ```text
-{category}/
+services/
   {srv-name}/
     compose.yml          # independent project
     .env                 # secrets (gitignored)
     .env.example         # committed template (xxxxxx + example URLs)
     .gitignore           # ignore runtime data dirs (data/, files/, ...)
     extra-configs/       # volumes, Dockerfiles, scripts as needed
-
-000-deprecated/
-  {project}/
-    v0/  compose.yml     # versioned, self-contained
-    v1/  compose.yml
 ```
 
-### Categories
-
-| Category | Description |
-| ---------- | ------------- |
-| `infra/` | Infrastructure, networking, DNS, proxy, tunnels, platform, secrets |
-| `monitoring/` | Observability, exporters, dashboards, alerting |
-| `storage/` | Databases, registries, file systems, backups |
-| `apps/` | Productivity apps, pastebins, CMS, design tools, sync |
-| `media/` | Media servers, photo backup, torrent clients |
-| `automation/` | CI/CD, workflow orchestration, event agents, job runners |
+No category folders: the stack name is unique, so a directory's purpose is read from its
+contents. Deprecated stacks keep their versioned, self-contained form under `services/`:
+`{project}/v0/compose.yml`, `{project}/v1/compose.yml`.
 
 ## Nomad jobs
 
-Only one Nomad job file exists (`storage/pgreplication/pgreplication.nomad`). Uses modern HCL2 syntax (no wrapping braces). Pattern:
+Only one Nomad job file exists (`services/pgreplication/pgreplication.nomad`). Uses modern HCL2
+syntax (no wrapping braces). Pattern:
 
 ```hcl
 job "name" {
