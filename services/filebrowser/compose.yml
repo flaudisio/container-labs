@@ -1,7 +1,7 @@
 ---
 services:
   filebrowser:
-    image: gtstef/filebrowser:2.1.0-beta@sha256:329dfca21dcd04d1430f9f190a719d9e9ecb0fb9a916d26a56cd631876aebaf1
+    image: gtstef/filebrowser:2.1.0-stable@sha256:17de8d0ac6a6bcfd5ef9aca43d6c0aa2fd031a07d6ee9b8a3b7c6c646efe35bf
     container_name: filebrowser
     restart: unless-stopped
     user: 1000:1000
