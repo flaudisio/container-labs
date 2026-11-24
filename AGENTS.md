@@ -39,9 +39,24 @@ sysctls:
 | `healthcheck:` | `["CMD", ...]` or `["CMD-SHELL", "..."]`. Include `interval/timeout/retries/start_period`. Postgres: `pg_isready` (below) |
 | `depends_on:` | Simple list by default. `condition: service_healthy` for DBs; `condition: service_completed_successfully` for init containers |
 | `environment:` | Key-value map (dominant) or `KEY=VALUE` list format. Env vars from `.env` via `${VAR}` |
+| `image:` | `repo/name:x.y.z@sha256:<digest>` — see [Image pinning](#image-pinning) |
 | YAML anchors | `x-credentials:` + `&var` / `*var` for DB credential reuse |
 | Comments | `# Ref: https://...` to cite upstream. `# NOTE:`, `# HACK:`, `# TODO:` for notes |
 | `version:` | Omit in new files |
+
+### Image pinning
+
+Every `image:` is a digest pin, in the style of `~/projects/labs/nomad-config-live`:
+`repo/name:x.y.z@sha256:<digest>` — the tag for readability, the digest for reproducibility.
+
+- Resolve the tag's **multi-arch index** digest from the registry, e.g.
+  `docker buildx imagetools inspect postgres:16-alpine`; never leave a bare tag.
+- The digest goes after the resolved tag, so variable tags keep working:
+  `grafana/grafana:${GRAFANA_VERSION:-12.3.3}@sha256:<digest>`.
+- `latest@sha256:<digest>` is acceptable when upstream publishes no stable tag.
+- A digest in a trailing comment pins nothing — it must be part of `image:`.
+- Images built locally from a `build:` block are exempt; they have no registry digest.
+- Stacks that still use bare tags are pinned when next touched, not mass-rewritten.
 
 ### Postgres healthcheck & dependency
 
