@@ -32,8 +32,12 @@ Every image is pinned by digest; bump the tag and digest together.
 | `exporter` | `/srv/container-labs/semaphore/exporter` | `/data` |
 
 `exporter` runs as `593:593` and `mcp` as `601:601`, so their host dirs must be owned by those
-ids. `postgres-backups` runs as `postgres:postgres`; see [PostgreSQL backups](#postgresql-backups)
-for the required ownership.
+ids. `postgres-backups` runs as `postgres:postgres` (uid 70 in the alpine image). All of them are
+created with the right owner by:
+
+```bash
+mise run setup    # from services/semaphore/, needs sudo
+```
 
 ### Database and backups
 
@@ -75,17 +79,8 @@ for the required ownership.
 
 ## PostgreSQL backups
 
-Required setup **before** running the backup container for the first time:
-
-```bash
-# Default images (Debian-based)
-sudo mkdir -pv /srv/container-labs/semaphore/postgres-backups
-sudo chown -Rv 999:999 /srv/container-labs/semaphore/postgres-backups
-
-# Alpine images
-sudo mkdir -pv /srv/container-labs/semaphore/postgres-backups
-sudo chown -Rv 70:70 /srv/container-labs/semaphore/postgres-backups
-```
+`mise run setup` creates `/srv/container-labs/semaphore/postgres-backups` owned by `70:70`; the
+container cannot write its dumps without it.
 
 Create backup manually:
 
