@@ -2,7 +2,7 @@
 # Ref: https://docs.openwebui.com/getting-started/quick-start
 services:
   openwebui:
-    image: ghcr.io/open-webui/open-webui:0.13.3
+    image: ghcr.io/open-webui/open-webui:0.13.3@sha256:46b59158e6558eeb980bc828e0f1b30238ad24d82ed84d5e5eda1dab2a082f14
     restart: unless-stopped
     ports:
       - "3000:8080"

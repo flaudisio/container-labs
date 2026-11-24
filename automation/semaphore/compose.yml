@@ -1,7 +1,7 @@
 ---
 services:
   postgres-server:
-    image: postgres:18-alpine
+    image: postgres:18-alpine@sha256:0115267ab5a509022df9319c77be365cef335adb71556c75f60f5360ee247e71
     restart: unless-stopped
     volumes:
       - /srv/container-labs/semaphore/postgres-server:/var/lib/postgresql
@@ -16,7 +16,7 @@ services:
       retries: 5
 
   semaphore:
-    image: flaudisio/semaphore-server:2.20.23
+    image: flaudisio/semaphore-server:2.20.23@sha256:bf3e0e796aeb9a739001109d4ad861667f65d87742669643512b35decb9109a6
     restart: unless-stopped
     ports:
       - 17300:3000
@@ -58,7 +58,7 @@ services:
           - semaphore.local
 
   runner-01:
-    image: flaudisio/semaphore-runner:2.20.23-ansible-2.21
+    image: flaudisio/semaphore-runner:2.20.23-ansible-2.21@sha256:fec1a087e595dabba7cab2ed56d5a00f1d937b94cdd94ea7adeee0a2fd249f36
     restart: unless-stopped
     volumes:
       - /srv/container-labs/semaphore/runner-01-config:/etc/semaphore
@@ -94,7 +94,7 @@ services:
       disable: true
 
   postgres-backups:
-    image: prodrigestivill/postgres-backup-local:18-alpine
+    image: prodrigestivill/postgres-backup-local:18-alpine@sha256:5519b121b9f3058dc6f116927f8131a6f67951542dbf2cdacfd193f42daaa7a3
     restart: unless-stopped
     user: postgres:postgres
     volumes:
@@ -123,7 +123,7 @@ services:
   # - https://github.com/vremenar/semaphore-prometheus-exporter/blob/main/docker-compose.yml
   # - https://github.com/vremenar/semaphore-prometheus-exporter/#configuration-reference
   exporter:
-    image: vremenar/semaphore-prometheus-exporter:1.4.0
+    image: vremenar/semaphore-prometheus-exporter:1.4.0@sha256:8ee9db776dd4983224c666d18defa1d5dea6b4b444f1ecf2b0cd22e5414eac64
     restart: unless-stopped
     user: 593:593
     ports:
@@ -145,7 +145,7 @@ services:
       - semaphore
 
   mcp:
-    image: ghcr.io/cloin/semaphore-mcp:1.0.6
+    image: ghcr.io/cloin/semaphore-mcp:1.0.6@sha256:feba1b701192aa2e5624294c9d461af5d5b020def7ae698be25d1eeaf1fe6fae
     restart: unless-stopped
     ports:
       - "9500:9000"

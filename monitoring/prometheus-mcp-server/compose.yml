@@ -2,7 +2,7 @@
 # Ref: https://github.com/pab1it0/prometheus-mcp-server
 services:
   mcp:
-    image: ghcr.io/pab1it0/prometheus-mcp-server:1.6.1
+    image: ghcr.io/pab1it0/prometheus-mcp-server:1.6.1@sha256:ed91f3f9e4f6fb92c5b8fd48a29f3382c11498de405f59da5eac16398d47d43b
     restart: unless-stopped
     ports:
       - "8077:8080"

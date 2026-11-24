@@ -3,7 +3,7 @@ name: gatus
 
 services:
   consul-server:
-    image: hashicorp/consul:1.20
+    image: hashicorp/consul:1.20@sha256:200471c74bc0965cd20c81eacc31a209873d5d9e599fe637ceb856b0cbbc518d
     command: agent -config-dir=/consul/config
     hostname: consul-server
     restart: unless-stopped

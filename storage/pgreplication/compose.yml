@@ -8,7 +8,7 @@ x-credentials:
 
 services:
   primary:
-    image: postgres:14-alpine
+    image: postgres:14-alpine@sha256:e7d9e6aac7fe3232f7661da103aebc0ce38b04105b46af5e9edd5ef6bc343f20
     command: postgres -c 'config_file=/etc/postgresql/postgresql.conf' -c 'hba_file=/etc/postgresql/pg_hba.conf'
     restart: unless-stopped
     container_name: pgreplication-primary
@@ -25,7 +25,7 @@ services:
       REPLICATION_PASSWORD: *replication_pass
 
   replica-01:
-    image: postgres:14-alpine
+    image: postgres:14-alpine@sha256:e7d9e6aac7fe3232f7661da103aebc0ce38b04105b46af5e9edd5ef6bc343f20
     entrypoint: /setup-replica.sh
     command: run-setup
     restart: unless-stopped
@@ -41,7 +41,7 @@ services:
       - primary
 
   replica-02:
-    image: postgres:14-alpine
+    image: postgres:14-alpine@sha256:e7d9e6aac7fe3232f7661da103aebc0ce38b04105b46af5e9edd5ef6bc343f20
     entrypoint: /setup-replica.sh
     command: run-setup
     restart: unless-stopped
