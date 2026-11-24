@@ -72,26 +72,13 @@ services:
         [
           "ANSIBLE_GALAXY_SERVER_LIST",
           "ANSIBLE_GALAXY_SERVER_LOCAL_URL",
-          "ANSIBLE_GALAXY_SERVER_COMMUNITY_URL"
+          "ANSIBLE_GALAXY_SERVER_UPSTREAM_URL"
         ]
-      ANSIBLE_GALAXY_SERVER_LIST: local,community
-      ANSIBLE_GALAXY_SERVER_LOCAL_URL: http://galaxy-proxy
-      ANSIBLE_GALAXY_SERVER_COMMUNITY_URL: https://galaxy.ansible.com
+      ANSIBLE_GALAXY_SERVER_LIST: local,upstream
+      ANSIBLE_GALAXY_SERVER_LOCAL_URL: https://galaxy-proxy.home.flaudisio.cloud
+      ANSIBLE_GALAXY_SERVER_UPSTREAM_URL: https://galaxy.ansible.com
     depends_on:
       - semaphore
-
-  # Ref: https://github.com/ctrliq/ascender-galaxy-proxy
-  galaxy-proxy:
-    image: ghcr.io/ctrliq/ascender-galaxy-proxy:1.0.3
-    restart: unless-stopped
-    user: 802:802
-    volumes:
-      - /srv/container-labs/semaphore/galaxy-proxy-cache:/app/.cache
-    environment:
-      URL: http://galaxy-proxy
-      UPSTREAM_BASEURL: https://galaxy.ansible.com
-    healthcheck:
-      disable: true
 
   postgres-backups:
     image: prodrigestivill/postgres-backup-local:18-alpine@sha256:5519b121b9f3058dc6f116927f8131a6f67951542dbf2cdacfd193f42daaa7a3
@@ -147,6 +134,7 @@ services:
   mcp:
     image: ghcr.io/cloin/semaphore-mcp:1.0.6@sha256:feba1b701192aa2e5624294c9d461af5d5b020def7ae698be25d1eeaf1fe6fae
     restart: unless-stopped
+    user: 601:601
     ports:
       - "9500:9000"
     environment:
